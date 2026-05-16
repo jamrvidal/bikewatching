@@ -13,14 +13,14 @@ const map = new mapboxgl.Map({
 });
 
 function getCoords(station) {
-        const point = new mapboxgl.LngLat(+station.lon, +station.lat); // Convert lon/lat to Mapbox LngLat
-        const { x, y } = map.project(point); // Project to pixel coordinates
-        return { cx: x, cy: y }; // Return as object for use in SVG attributes
+        const point = new mapboxgl.LngLat(+station.lon, +station.lat);
+        const { x, y } = map.project(point);
+        return { cx: x, cy: y }; 
     }
 
 function formatTime(minutes) {
-  const date = new Date(0, 0, 0, 0, minutes); // Set hours & minutes
-  return date.toLocaleString('en-US', { timeStyle: 'short' }); // Format as HH:MM AM/PM
+  const date = new Date(0, 0, 0, 0, minutes); 
+  return date.toLocaleString('en-US', { timeStyle: 'short' });
 }
 
 function minutesSinceMidnight(date) {
@@ -111,16 +111,15 @@ map.on('load', async () => {
     try {
         const jsonurl = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
 
-    // Await JSON fetch
         const jsonData = await d3.json(jsonurl);
 
-        console.log('Loaded JSON Data:', jsonData); // Log to verify structure
+        console.log('Loaded JSON Data:', jsonData);
 
         stations = jsonData.data.stations;
         console.log('Stations Array:', stations);
 
     }   catch (error) {
-        console.error('Error loading JSON:', error); // Handle errors
+        console.error('Error loading JSON:', error);
     }    
 
     
@@ -168,31 +167,31 @@ map.on('load', async () => {
 
     function updatePositions() {
         circles
-        .attr('cx', (d) => getCoords(d).cx) // Set the x-position using projected coordinates
-        .attr('cy', (d) => getCoords(d).cy); // Set the y-position using projected coordinates
+        .attr('cx', (d) => getCoords(d).cx)
+        .attr('cy', (d) => getCoords(d).cy);
     }
 
 // Initial position update when map loads
     updatePositions();
 
-    map.on('move', updatePositions); // Update during map movement
-    map.on('zoom', updatePositions); // Update during zooming
-    map.on('resize', updatePositions); // Update on window resize
-    map.on('moveend', updatePositions); // Final adjustment after movement ends
+    map.on('move', updatePositions);
+    map.on('zoom', updatePositions);
+    map.on('resize', updatePositions);
+    map.on('moveend', updatePositions);
 
     const timeSlider = document.getElementById('time-slider');
     const selectedTime = document.getElementById('selected-time');
     const anyTimeLabel = document.getElementById('any-time');
     
     function updateTimeDisplay() {
-        let timeFilter = Number(timeSlider.value); // Get slider value
+        let timeFilter = Number(timeSlider.value);
 
         if (timeFilter === -1) {
-            selectedTime.textContent = ''; // Clear time display
-            anyTimeLabel.style.display = 'block'; // Show "(any time)"
+            selectedTime.textContent = '';
+            anyTimeLabel.style.display = 'block';
         } else {
-            selectedTime.textContent = formatTime(timeFilter); // Display formatted time
-            anyTimeLabel.style.display = 'none'; // Hide "(any time)"
+            selectedTime.textContent = formatTime(timeFilter);
+            anyTimeLabel.style.display = 'none';
         }
 
         updateScatterPlot(timeFilter);
@@ -213,4 +212,3 @@ map.on('load', async () => {
     timeSlider.addEventListener('input', updateTimeDisplay);
     updateTimeDisplay();
 });
-
